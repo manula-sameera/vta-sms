@@ -18,10 +18,10 @@ import { FileUploadUploadEvent } from 'primereact/fileupload';
 import { Skeleton } from 'primereact/skeleton';
 import { VirtualScrollerLoadingTemplateOptions } from 'primereact/virtualscroller';
 import { Dropdown } from 'primereact/dropdown';
-import { ChangeEvent } from 'react';
-import { DropdownChangeEvent } from 'primereact/dropdown';
+import { parse } from 'csv-parse';
 
 const Crud = () => {
+    //empty model
     let emptyStudent: Models.Student = {
         traineeNo: '',
         nameWithInitials: '',
@@ -30,7 +30,7 @@ const Crud = () => {
         gender: '',
         mob: '',
         batch: '',
-        fingerPrintID:''
+        fingerPrintID: ''
     };
 
     const [students, setStudents] = useState<Models.Student[] | null>(null);
@@ -38,56 +38,59 @@ const Crud = () => {
     const [deleteStudentDialog, setDeleteStudentDialog] = useState(false);
     const [deleteStudentsDialog, setDeleteStudentsDialog] = useState(false);
     const [student, setStudent] = useState<Models.Student>(emptyStudent);
-    const [selectedStudents, setSelectedStudents] =  useState<Models.Student[] | null>(null);;
+    const [selectedStudents, setSelectedStudents] = useState<Models.Student[] | null>(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
     const toast = useRef<Toast>(null);
     const dt = useRef<DataTable<any>>(null);
     const [filters, setFilters] = useState<DataTableFilterMeta>({
-      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-  });
-  const [lazyLoading, setLazyLoading] = useState<boolean>(false);
-  const [batches, setBatches] = useState<Models.Batch[]>([]);
-  const [selectedBatch, setSelectedBatch] = useState<string>('');
-  const [selectedGender, setselectedGender] = useState<string>('');
-  const genders = [
-        { name: 'Male'},
-        { name: 'Female'}
-    ];
+        global: { value: null, matchMode: FilterMatchMode.CONTAINS }
+    });
+    const [lazyLoading, setLazyLoading] = useState<boolean>(false);
+    //combo box data
+    const [batches, setBatches] = useState<Models.Batch[]>([]);
+    const [selectedBatch, setSelectedBatch] = useState<string>('');
+    const [selectedGender, setselectedGender] = useState<string>('');
+    const genders = [{ name: 'Male' }, { name: 'Female' }];
 
+    // mail fetch event
     useEffect(() => {
         StudentService.getStudents().then((data: Models.Student[]) => setStudents(data));
         fetchBatches();
     }, []);
 
+    //#region combo box events
     useEffect(() => {
         setselectedGender(student.gender);
         setSelectedBatch(student.batch);
-      }, [student]);
+    }, [student]);
 
-   // useEffect to monitor changes in selectedGender and update student accordingly
-  useEffect(() => {
-    let _student = { ...student };
-    _student.gender = selectedGender;
-    setStudent(_student);
-  }, [selectedGender]);
+    useEffect(() => {
+        let _student = { ...student };
+        _student.gender = selectedGender;
+        setStudent(_student);
+    }, [selectedGender]);
 
-  useEffect(() => {
-    let _student = { ...student };
-    _student.batch = selectedBatch;
-    setStudent(_student);
-  }, [selectedBatch]);
+    useEffect(() => {
+        let _student = { ...student };
+        _student.batch = selectedBatch;
+        setStudent(_student);
+    }, [selectedBatch]);
 
     // Function to fetch batches
     const fetchBatches = async () => {
         try {
             const batchesData = await BatchService.getBatchs();
             setBatches(batchesData);
-            {console.log('batches'+JSON.stringify(batches));}
+            {
+                console.log('batches' + JSON.stringify(batches));
+            }
         } catch (error) {
             console.error('Error fetching batches:', error);
         }
     };
+
+    //#endregion
     const openNew = () => {
         setStudent(emptyStudent);
         setSubmitted(false);
@@ -114,13 +117,11 @@ const Crud = () => {
             let _students = [...(students as any)];
             let _student = { ...student };
             const index = findIndexById(student.traineeNo);
-            console.log('index '+index);
-            if (index!=-1) {
-               // const index = findIndexById(student.id);
+            console.log('index ' + index);
+            if (index != -1) {
                 _students[index] = _student;
                 try {
                     _students.push(_student);
-                   // StudentService.addStudent(_student);
                     const response: Response = await StudentService.updateStudent(encodeURIComponent(student.traineeNo), _student);
 
                     // Check if the response status is 201 (Created)
@@ -149,7 +150,7 @@ const Crud = () => {
                 //_student.image = 'student-placeholder.svg';
                 try {
                     _students.push(_student);
-                   // StudentService.addStudent(_student);
+                    // StudentService.addStudent(_student);
                     const response: Response = await StudentService.addStudent(_student);
 
                     // Check if the response status is 201 (Created)
@@ -173,7 +174,6 @@ const Crud = () => {
                         life: 3000
                     });
                 }
-                
             }
             setStudents(_students as any);
             setStudentDialog(false);
@@ -208,20 +208,19 @@ const Crud = () => {
         //     });
         // }
         setStudent({ ...student });
-        
+
         setStudentDialog(true);
     };
 
-    const confirmDeleteStudent = async (student: Models.Student) => { 
+    const confirmDeleteStudent = async (student: Models.Student) => {
         setStudent(student);
-        setDeleteStudentDialog(true); 
+        setDeleteStudentDialog(true);
         //setStudent(emptyStudent);
     };
 
     const deleteStudent = async () => {
-       
         try {
-           let _students = (students as any)?.filter((val: any) => val.traineeNo !== student.traineeNo);
+            let _students = (students as any)?.filter((val: any) => val.traineeNo !== student.traineeNo);
             setStudents(_students);
             setDeleteStudentDialog(false);
             const response: Response = await StudentService.deleteStudent(student.traineeNo);
@@ -233,15 +232,14 @@ const Crud = () => {
                     detail: 'Student Deleted',
                     life: 3000
                 });
-            }else{
+            } else {
                 toast.current?.show({
                     severity: 'error',
                     summary: 'Failed',
-                    detail: ''+response.status,
+                    detail: '' + response.status,
                     life: 3000
                 });
             }
-            
         } catch (error) {
             console.error('Error deleting student:', error);
             toast.current?.show({
@@ -255,19 +253,19 @@ const Crud = () => {
 
     const findIndexById = (TraineeNo: string) => {
         let index = -1;
-        console.log("students as any"+students as any);
+        console.log(('students as any' + students) as any);
         for (let i = 0; i < (students as any)?.length; i++) {
+            //TODO: change here
             if ((students as any)[i].traineeNo === TraineeNo) {
                 index = i;
                 break;
-            }else{
-              index = -1;
+            } else {
+                index = -1;
             }
         }
 
         return index;
     };
-
 
     const exportCSV = () => {
         dt.current?.exportCSV();
@@ -277,6 +275,7 @@ const Crud = () => {
         setDeleteStudentsDialog(true);
     };
 
+    //Bookmark: Delete multiple students
     const deleteSelectedStudents = async () => {
         let _students = (students as any)?.filter((val: any) => !(selectedStudents as any)?.includes(val));
         setStudents(_students);
@@ -291,109 +290,108 @@ const Crud = () => {
 
         try {
             //let _students = (students as any)?.filter((val: any) => val.id !== student.id);
-             //setStudents(_students);
-             setDeleteStudentDialog(false);
-             const response: Response = await StudentService.deleteStudents(selectedStudents as any);
-             setSelectedStudents(null);
-             if (response.status === 204) {
-                 toast.current?.show({
-                     severity: 'success',
-                     summary: 'Successful',
-                     detail: 'Student Deleted',
-                     life: 3000
-                 });
-             }else{
-                 toast.current?.show({
-                     severity: 'error',
-                     summary: 'Failed',
-                     detail: ''+response.status,
-                     life: 3000
-                 });
-             }
-    }catch (error) {
-        console.error('Error deleting student:', error);
-        toast.current?.show({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error deleting student',
-            life: 3000
-        });
-
+            //setStudents(_students);
+            setDeleteStudentDialog(false);
+            const response: Response = await StudentService.deleteStudents(selectedStudents as any);
+            setSelectedStudents(null);
+            if (response.status === 204) {
+                toast.current?.show({
+                    severity: 'success',
+                    summary: 'Successful',
+                    detail: 'Student Deleted',
+                    life: 3000
+                });
+            } else {
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Failed',
+                    detail: '' + response.status,
+                    life: 3000
+                });
+            }
+        } catch (error) {
+            console.error('Error deleting student:', error);
+            toast.current?.show({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error deleting student',
+                life: 3000
+            });
+        }
     };
-}
+    //Bookmark: Input change event
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, name: string) => {
         const val = (e.target && e.target.value) || '';
         let _student = { ...student };
         _student[`${name}`] = val;
-
         setStudent(_student);
     };
 
-    // const onInputChange = (value: any, name: string, feild: string) => {
-    //     const val = (value.target && value.value[feild]) || '';
-    //     let _student = { ...student };
-    //     _student[`${name}`] = val;
+    // Update this function to handle the global search input
+    const handleGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        let _filters = { ...filters };
 
-    //     setStudent(_student);
-    // };
-//Overloaded function signatures
-// function onInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, name: string): void;
-// function onInputChange(value: any, name: string): void;
+        // @ts-ignore
+        _filters['global'].value = value;
 
-// // Implementation
-// function onInputChange(param1: any, param2: string): void {
-//     let _student = { ...student };
-//     console.log('param1 '+typeof param1);
-//     if (typeof param1 === 'string') {
-//         // Handle Dropdown component case
-//         _student[param2] = param1;
-//     } else {
-//         // Handle InputText component case
-//         const val = (param1.target && param1.target.value) || '';
-//         console.log('param1.target'+param1.target);
-//         console.log('param1.target.value'+param1.target.value);
-//         console.log('val'+val);
-//         _student[param2] = val;
-//     }
+        setFilters(_filters);
+        setGlobalFilterValue(value);
+    };
 
-//     setStudent(_student);
-// }
-// type InputChangeEvent = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
-// type SelectChangeEvent = ChangeEvent<HTMLSelectElement>;
-// type AllChangeEvent = InputChangeEvent | SelectChangeEvent | DropdownChangeEvent;
-
-// function onInputChange(e: AllChangeEvent, name: string): void {
-//         console.log('e.target'+e.target);
-//         console.log('e.target.value'+e.target.value);
-//          const val = (e.target && e.target.value) || '';
-//          console.log('val'+val);
-//         let _student = { ...student };
-//         _student[`${name}`] = val;
-
-//         setStudent(_student);
-// }
-
+    const handleFileUpload = async (event: FileUploadUploadEvent) => {
+        const file = event.files[0];
+        const reader = new FileReader();
     
+        reader.onload = async (e) => {
+            try {
+                // Parse the file content (assuming CSV format)
+                const csvData = e.target?.result as string;
+                const studentsData = await parseCSV(csvData); // Implement this function to parse CSV data
+              
+                // Add the parsed students to the application
+                const response = await StudentService.addStudnets(studentsData);
+                if (response.status === 201) {
+                    // Show success message
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Successful',
+                        detail: 'Students Uploaded Successfully',
+                        life: 3000
+                    });
+                    // Refresh the student data
+                    StudentService.getStudents().then((data: Models.Student[]) => setStudents(data));
+                } else {
+                    // Show error message
+                    throw new Error('Failed to upload students. Status: ' + response.status);
+                }
+            } catch (error) {
+                // Handle error
+                console.error('Error uploading students:', error);
+                toast.current?.show({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: 'Error Uploading Students: ' + error,
+                    life: 3000
+                });
+            }
+        };
+    
+        // Read the file as text
+        reader.readAsText(file);
+    };
 
-// Update this function to handle the global search input
-const handleGlobalFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const value = e.target.value;
-  let _filters = { ...filters };
-
-  // @ts-ignore
-  _filters['global'].value = value;
-
-  setFilters(_filters);
-  setGlobalFilterValue(value);
-};
-
-const handleFileUpload = (event: FileUploadUploadEvent) => {
-  
-  };
-
-
-
-
+    const parseCSV = async (csvData: string): Promise<Models.Student[]> => {
+        return new Promise((resolve, reject) => {
+            parse(csvData, { columns: true }, (err, records) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(records as Models.Student[]);
+                }
+            });
+        });
+    };
 
     const leftToolbarTemplate = () => {
         return (
@@ -409,19 +407,21 @@ const handleFileUpload = (event: FileUploadUploadEvent) => {
     const rightToolbarTemplate = () => {
         return (
             <React.Fragment>
-               <FileUpload 
-    mode="basic" 
-    accept=".csv,.xlsx" // Accept CSV and Excel files
-    maxFileSize={1000000} 
-    chooseLabel="Import CSV/Excel" // Updated label
-    className="mr-2 inline-block" 
-    onUpload={handleFileUpload}
-/>
+                <FileUpload
+                    mode="basic"
+                    accept=".csv,.xlsx" // Accept CSV and Excel files
+                    maxFileSize={1000000}
+                    chooseLabel="Import CSV/Excel" // Updated label
+                    className="mr-2 inline-block"
+                    onUpload={handleFileUpload}
+                />
                 <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportCSV} />
             </React.Fragment>
         );
     };
 
+    //Bookmark: Table column Tempeletes
+    //#region Table column Tempeletes
     const traineeNoBodyTemplate = (rowData: Models.Student) => {
         return (
             <>
@@ -441,55 +441,55 @@ const handleFileUpload = (event: FileUploadUploadEvent) => {
     };
 
     const addressBodyTemplate = (rowData: Models.Student) => {
-      return (
-          <>
-              <span className="p-column-title">address</span>
-              {rowData.address}
-          </>
-      );
-  };
+        return (
+            <>
+                <span className="p-column-title">address</span>
+                {rowData.address}
+            </>
+        );
+    };
 
-  const nicBodyTemplate = (rowData: Models.Student) => {
-    return (
-        <>
-            <span className="p-column-title">nic</span>
-            {rowData.nic}
-        </>
-    );
-};
+    const nicBodyTemplate = (rowData: Models.Student) => {
+        return (
+            <>
+                <span className="p-column-title">nic</span>
+                {rowData.nic}
+            </>
+        );
+    };
 
-const genderBodyTemplate = (rowData: Models.Student) => {
-  return (
-      <>
-          <span className="p-column-title">gender</span>
-          {rowData.gender}
-      </>
-  );
-};
-const mobBodyTemplate = (rowData: Models.Student) => {
-    return (
-        <>
-            <span className="p-column-title">mob</span>
-            {rowData.mob}
-        </>
-    );
-  };
-  const batchBodyTemplate = (rowData: Models.Student) => {
-    return (
-        <>
-            <span className="p-column-title">batch</span>
-            {rowData.batch}
-        </>
-    );
-  };
-  const fingerPrintIDBodyTemplate = (rowData: Models.Student) => {
-    return (
-        <>
-            <span className="p-column-title">fingerPrintID</span>
-            {rowData.fingerPrintID}
-        </>
-    );
-  };
+    const genderBodyTemplate = (rowData: Models.Student) => {
+        return (
+            <>
+                <span className="p-column-title">gender</span>
+                {rowData.gender}
+            </>
+        );
+    };
+    const mobBodyTemplate = (rowData: Models.Student) => {
+        return (
+            <>
+                <span className="p-column-title">mob</span>
+                {rowData.mob}
+            </>
+        );
+    };
+    const batchBodyTemplate = (rowData: Models.Student) => {
+        return (
+            <>
+                <span className="p-column-title">batch</span>
+                {rowData.batch}
+            </>
+        );
+    };
+    const fingerPrintIDBodyTemplate = (rowData: Models.Student) => {
+        return (
+            <>
+                <span className="p-column-title">fingerPrintID</span>
+                {rowData.fingerPrintID}
+            </>
+        );
+    };
 
     const actionBodyTemplate = (rowData: Models.Student) => {
         return (
@@ -499,6 +499,7 @@ const mobBodyTemplate = (rowData: Models.Student) => {
             </>
         );
     };
+    //#endregion
 
     const header = students && (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
@@ -537,8 +538,6 @@ const mobBodyTemplate = (rowData: Models.Student) => {
         );
     };
 
-   
-
     return (
         <div className="grid crud-demo">
             <div className="col-12">
@@ -547,24 +546,23 @@ const mobBodyTemplate = (rowData: Models.Student) => {
                     <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
 
                     <DataTable
-                       virtualScrollerOptions={{ lazy: true, itemSize: 46, delay: 200, showLoader: true, loading: lazyLoading, loadingTemplate }}
-                       filters={filters} filterDisplay="row"
-                       ref={dt}
-                       value={students}
-                       selection={selectedStudents}
-                       onSelectionChange={(e) => setSelectedStudents(e.value as any)}
-                       dataKey="traineeNo"
-                       paginator
-                       rows={20}
-                       rowsPerPageOptions={[25, 50, 100]}
-                       className="datatable-responsive"
-                       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-                       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} students"
-                      // globalFilter={globalFilterValue} // Pass the global filter value
-                       globalFilterFields={['traineeNo', 'nameWithInitials','address','nic','gender','mob','batch','fingerPrintID']}
-                       emptyMessage="No students found."
-                       header={header}
-                       responsiveLayout="scroll"
+                        virtualScrollerOptions={{ lazy: true, itemSize: 46, delay: 200, showLoader: true, loading: lazyLoading, loadingTemplate }}
+                        filters={filters}
+                        filterDisplay="row"
+                        ref={dt}
+                        value={students}
+                        selection={selectedStudents}
+                        onSelectionChange={(e) => setSelectedStudents(e.value as any)}
+                        dataKey="traineeNo"
+                        paginator
+                        rows={20}
+                        rowsPerPageOptions={[25, 50, 100]}
+                        className="datatable-responsive"
+                        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} students"
+                        globalFilterFields={['traineeNo', 'nameWithInitials', 'address', 'nic', 'gender', 'mob', 'batch', 'fingerPrintID']}
+                        emptyMessage="No students found."
+                        header={header}
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column field="traineeNo" header="traineeNo" sortable body={traineeNoBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
@@ -578,10 +576,9 @@ const mobBodyTemplate = (rowData: Models.Student) => {
                         <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                     </DataTable>
 
-                    
                     <Dialog visible={studentDialog} style={{ width: '450px' }} header="Student Details" modal className="p-fluid" footer={studentDialogFooter} onHide={hideDialog}>
-                        {/* {student.image && <img src={`/demo/images/student/${student.image}`} alt={student.image} width="150" className="mt-0 mx-auto mb-5 block shadow-2" />} */}
-                        
+                        {/* Bookmark: Input Elements */}
+                        {/* #region Input Elements */}
                         <div className="field">
                             <label htmlFor="traineeNo">traineeNo</label>
                             <InputText
@@ -628,7 +625,7 @@ const mobBodyTemplate = (rowData: Models.Student) => {
                             <label htmlFor="nic">nic</label>
                             <InputText
                                 id="nic"
-                                value={student.nic} 
+                                value={student.nic}
                                 onChange={(e) => onInputChange(e, 'nic')}
                                 required
                                 autoFocus
@@ -640,10 +637,18 @@ const mobBodyTemplate = (rowData: Models.Student) => {
                         </div>
                         <div className="field">
                             <label htmlFor="gender">gender</label>
-                            <Dropdown value={selectedGender} onChange={(e) =>{setselectedGender(e.value.name);}} options={genders} optionLabel="name" optionValue='name'
-                            className={classNames({
-                                'p-invalid': submitted && !student.gender
-                            })} />
+                            <Dropdown
+                                value={selectedGender}
+                                onChange={(e) => {
+                                    setselectedGender(e.value.name);
+                                }}
+                                options={genders}
+                                optionLabel="name"
+                                optionValue="name"
+                                className={classNames({
+                                    'p-invalid': submitted && !student.gender
+                                })}
+                            />
                             {submitted && !student.gender && <small className="p-invalid">gender is required.</small>}
                         </div>
                         <div className="field">
@@ -668,11 +673,11 @@ const mobBodyTemplate = (rowData: Models.Student) => {
                                 options={batches}
                                 onChange={(e) => setSelectedBatch(e.value)}
                                 optionLabel="batchID" // Change this to the appropriate property of the batch object
-                                optionValue = "batchID"
+                                optionValue="batchID"
                                 placeholder="Select Batch" // Placeholder text for dropdown when no item is selected
                                 className={classNames({
                                     'p-invalid': submitted && !student.batch
-                                })} 
+                                })}
                             />
                             {submitted && !student.batch && <small className="p-invalid">batch is required.</small>}
                         </div>
@@ -690,7 +695,7 @@ const mobBodyTemplate = (rowData: Models.Student) => {
                             />
                             {submitted && !student.fingerPrintID && <small className="p-invalid">fingerPrintID is required.</small>}
                         </div>
-
+                        {/* #endregion */}
                     </Dialog>
 
                     <Dialog visible={deleteStudentDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteStudentDialogFooter} onHide={hideDeleteStudentDialog}>
@@ -698,6 +703,7 @@ const mobBodyTemplate = (rowData: Models.Student) => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {student && (
                                 <span>
+                                    {/* TODO:change here */}
                                     Are you sure you want to delete <b>{student.nameWithInitials}</b>?
                                 </span>
                             )}

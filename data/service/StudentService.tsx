@@ -44,6 +44,22 @@ export const StudentService = {
     }
   },
 
+  async addStudnets(students: Models.Student[]): Promise<Response> {
+    try {
+      const response = await fetch(`${API_URL}/StudentDetails/add-multiple`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(students),
+      });
+      return response;
+    } catch (error) {
+      console.error('Error adding students:', error);
+      throw error;
+    }
+  },
+
   async updateStudent(TraineeNo: string, studentData: Models.Student): Promise<Response> {
     try {
       const response = await fetch(`${API_URL}/StudentDetails/${TraineeNo}`, {
