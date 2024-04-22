@@ -171,8 +171,7 @@ const Dashboard = () => {
                             <i className="pi pi-graduation-cap text-orange-500 text-xl" />
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">%52+ </span>
-                    <span className="text-500">since last week</span>
+                    
                 </div>
             </div>
             <div className="col-12 lg:col-6 xl:col-3">
@@ -186,8 +185,7 @@ const Dashboard = () => {
                             <i className="pi pi-building-columns text-cyan-500 text-xl" />
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">520 </span>
-                    <span className="text-500">newly registered</span>
+                   
                 </div>
             </div>
             <div className="col-12 lg:col-6 xl:col-3">
@@ -201,8 +199,7 @@ const Dashboard = () => {
                             <i className="pi pi-comment text-purple-500 text-xl" />
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">85 </span>
-                    <span className="text-500">responded</span>
+                    
                 </div>
             </div>
 
