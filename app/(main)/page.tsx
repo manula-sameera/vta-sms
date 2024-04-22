@@ -143,32 +143,32 @@ const Dashboard = () => {
 
     return (
         <div className="grid">
+            
             <div className="col-12 lg:col-6 xl:col-3">
+            <Link href="/pages/student">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">Students</span>
-                            <div className="text-900 font-medium text-xl">{count.stuDetailsCount}</div>
+                            <div className="text-900 font-medium text-5xl">{count.stuDetailsCount}</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                        <Link href="/pages/student">
-                            <i className="pi pi-user-edit text-blue-500 text-xl"/>
-                            </Link>
+                        <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '6rem', height: '6rem' }}>  
+                            <i className="pi pi-user-edit text-blue-500 text-6xl"/>
                         </div>
                     </div>
-                    <span className="text-green-500 font-medium">24 new </span>
-                    <span className="text-500">since last visit</span>
                 </div>
+                </Link>
             </div>
+           
             <div className="col-12 lg:col-6 xl:col-3">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">Courses</span>
-                            <div className="text-900 font-medium text-xl">{count.coursesCount}</div>
+                            <div className="text-900 font-medium text-5xl">{count.coursesCount}</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-graduation-cap text-orange-500 text-xl" />
+                        <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '6rem', height: '6rem' }}>
+                            <i className="pi pi-graduation-cap text-orange-500 text-6xl" />
                         </div>
                     </div>
                     
@@ -179,10 +179,10 @@ const Dashboard = () => {
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">Organizations</span>
-                            <div className="text-900 font-medium text-xl">{count.organizationsCount}</div>
+                            <div className="text-900 font-medium text-5xl">{count.organizationsCount}</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-building-columns text-cyan-500 text-xl" />
+                        <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '6rem', height: '6rem' }}>
+                            <i className="pi pi-building-columns text-cyan-500 text-6xl" />
                         </div>
                     </div>
                    
@@ -193,10 +193,10 @@ const Dashboard = () => {
                     <div className="flex justify-content-between mb-3">
                         <div>
                             <span className="block text-500 font-medium mb-3">Comments</span>
-                            <div className="text-900 font-medium text-xl">152 Unread</div>
+                            <div className="text-900 font-medium text-5xl">152 Unread</div>
                         </div>
-                        <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-comment text-purple-500 text-xl" />
+                        <div className="flex align-items-center justify-content-center bg-purple-100 border-round" style={{ width: '6rem', height: '6rem' }}>
+                            <i className="pi pi-comment text-purple-500 text-6xl" />
                         </div>
                     </div>
                     
