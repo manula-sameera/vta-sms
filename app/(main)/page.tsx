@@ -118,9 +118,9 @@ const Dashboard = () => {
     }, [layoutConfig.colorScheme]);
 
     const formatCurrency = (value: number) => {
-        return value?.toLocaleString('en-US', {
+        return value?.toLocaleString('en-LK', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'LKR'
         });
     };
 
@@ -134,7 +134,9 @@ const Dashboard = () => {
                             <div className="text-900 font-medium text-xl">152</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-shopping-cart text-blue-500 text-xl" />
+                        <Link href="/pages/student">
+                            <i className="pi pi-shopping-cart text-blue-500 text-xl"/>
+                            </Link>
                         </div>
                     </div>
                     <span className="text-green-500 font-medium">24 new </span>

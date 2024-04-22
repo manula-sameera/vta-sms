@@ -5,7 +5,7 @@ import { Column } from 'primereact/column';
 import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { FilterMatchMode } from 'primereact/api';
 import { Dialog } from 'primereact/dialog';
-import { FileUpload } from 'primereact/fileupload';
+import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
@@ -21,7 +21,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { parse } from 'csv-parse';
 
 const Crud = () => {
-    //empty model
+    //Bookmark:empty model
     let emptyStudent: Models.Student = {
         traineeNo: '',
         nameWithInitials: '',
@@ -53,12 +53,13 @@ const Crud = () => {
     const [selectedGender, setselectedGender] = useState<string>('');
     const genders = [{ name: 'Male' }, { name: 'Female' }];
 
-    // mail fetch event
+    //Bookmark: main fetch event
     useEffect(() => {
         StudentService.getStudents().then((data: Models.Student[]) => setStudents(data));
         fetchBatches();
     }, []);
 
+    //Bookmark : combo box events
     //#region combo box events
     useEffect(() => {
         setselectedGender(student.gender);
@@ -110,6 +111,7 @@ const Crud = () => {
         setDeleteStudentsDialog(false);
     };
 
+    //Bookmark: Save student
     const saveStudent = async () => {
         setSubmitted(true);
 
@@ -121,7 +123,7 @@ const Crud = () => {
             if (index != -1) {
                 _students[index] = _student;
                 try {
-                    _students.push(_student);
+                    //_students.push(_student);
                     const response: Response = await StudentService.updateStudent(encodeURIComponent(student.traineeNo), _student);
 
                     // Check if the response status is 201 (Created)
@@ -181,32 +183,9 @@ const Crud = () => {
         }
     };
 
+    //Bookmark: Edit student
     const editStudent = async (student: Models.Student) => {
-        // try {
-        //    // StudentService.addStudent(_student);
-        //     const response: Response = await StudentService.updateStudent(student.id, student);
-
-        //     // Check if the response status is 201 (Created)
-        //     if (response.status === 201) {
-        //         toast.current?.show({
-        //             severity: 'success',
-        //             summary: 'Successful',
-        //             detail: 'Student Updated',
-        //             life: 3000
-        //         });
-        //     } else {
-        //         // If response status is not 201, show error message
-        //         throw new Error('Failed to create student. Status: ' + response.status);
-        //     }
-        // } catch (error) {
-        //     const errorMessage = (error as Error).message; // Type assertion
-        //     toast.current?.show({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: 'Error Updating student: ' + errorMessage,
-        //         life: 3000
-        //     });
-        // }
+        
         setStudent({ ...student });
 
         setStudentDialog(true);
@@ -214,16 +193,15 @@ const Crud = () => {
 
     const confirmDeleteStudent = async (student: Models.Student) => {
         setStudent(student);
-        setDeleteStudentDialog(true);
-        //setStudent(emptyStudent);
+        setDeleteStudentDialog(true); 
     };
-
+//Bookmark: Delete student
     const deleteStudent = async () => {
         try {
             let _students = (students as any)?.filter((val: any) => val.traineeNo !== student.traineeNo);
             setStudents(_students);
             setDeleteStudentDialog(false);
-            const response: Response = await StudentService.deleteStudent(student.traineeNo);
+            const response: Response = await StudentService.deleteStudent(encodeURIComponent(student.traineeNo));
             setStudent(emptyStudent);
             if (response.status === 204) {
                 toast.current?.show({
@@ -255,7 +233,7 @@ const Crud = () => {
         let index = -1;
         console.log(('students as any' + students) as any);
         for (let i = 0; i < (students as any)?.length; i++) {
-            //TODO: change here
+            //TODO: change here select index
             if ((students as any)[i].traineeNo === TraineeNo) {
                 index = i;
                 break;
@@ -281,13 +259,6 @@ const Crud = () => {
         setStudents(_students);
         setDeleteStudentsDialog(false);
         setSelectedStudents(null);
-        toast.current?.show({
-            severity: 'success',
-            summary: 'Successful',
-            detail: 'Students Deleted',
-            life: 3000
-        });
-
         try {
             //let _students = (students as any)?.filter((val: any) => val.id !== student.id);
             //setStudents(_students);
@@ -339,7 +310,8 @@ const Crud = () => {
         setGlobalFilterValue(value);
     };
 
-    const handleFileUpload = async (event: FileUploadUploadEvent) => {
+    // Bookmark: Handle file upload
+    const handleFileUpload = async (event: FileUploadHandlerEvent) => {
         const file = event.files[0];
         const reader = new FileReader();
     
@@ -347,8 +319,9 @@ const Crud = () => {
             try {
                 // Parse the file content (assuming CSV format)
                 const csvData = e.target?.result as string;
+                console.log('csvData:', csvData);
                 const studentsData = await parseCSV(csvData); // Implement this function to parse CSV data
-              
+                console.log('studentsData:', studentsData);
                 // Add the parsed students to the application
                 const response = await StudentService.addStudnets(studentsData);
                 if (response.status === 201) {
@@ -409,11 +382,13 @@ const Crud = () => {
             <React.Fragment>
                 <FileUpload
                     mode="basic"
-                    accept=".csv,.xlsx" // Accept CSV and Excel files
+                    accept=".csv" // Accept CSV and Excel files
                     maxFileSize={1000000}
                     chooseLabel="Import CSV/Excel" // Updated label
                     className="mr-2 inline-block"
-                    onUpload={handleFileUpload}
+                    customUpload
+                    uploadHandler={handleFileUpload}
+                    auto
                 />
                 <Button label="Export" icon="pi pi-upload" severity="help" onClick={exportCSV} />
             </React.Fragment>
@@ -503,6 +478,7 @@ const Crud = () => {
 
     const header = students && (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+            {/* //Bookmark: Table header */}
             <h5 className="m-0">Manage Students</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
@@ -564,6 +540,7 @@ const Crud = () => {
                         emptyMessage="No students found."
                         header={header}
                     >
+                        {/* Bookmark:Table Columns */}
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
                         <Column field="traineeNo" header="traineeNo" sortable body={traineeNoBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
                         <Column field="nameWithInitials" header="nameWithInitials" sortable body={nameWithInitialsBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
@@ -703,7 +680,7 @@ const Crud = () => {
                             <i className="pi pi-exclamation-triangle mr-3" style={{ fontSize: '2rem' }} />
                             {student && (
                                 <span>
-                                    {/* TODO:change here */}
+                                    {/* TODO:change here delete message */}
                                     Are you sure you want to delete <b>{student.nameWithInitials}</b>?
                                 </span>
                             )}

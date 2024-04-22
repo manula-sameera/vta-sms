@@ -18,14 +18,28 @@ declare namespace Models {
     }
 
     interface Batch {
-        BatchID: string;
-        Batch: string;
-        BYear: Number;
-        OrganizationID: string;
-        BAmount: Number;
-        CourseID: string;
-        HeldDays: string;
-        BTarget: string;
+        batchID: string;
+        batch: string;
+        bYear: number;
+        organizationID: string;
+        bAmount: number;
+        courseID: string;
+        heldDays: string;
+        bTarget: string;
+        [key: string]: string | string[] | number;
+    }
+
+    interface Course{
+        courseID :	string;
+        courseName:	string;
+        courseInstructor : string;  
+        [key: string]: string | string[] | number;
+    }
+
+    interface Organization {
+        organizationID: string;
+        organizationName: string;
+        address: string;
         [key: string]: string | string[] | number;
     }
 }

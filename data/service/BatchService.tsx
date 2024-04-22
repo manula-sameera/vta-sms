@@ -6,11 +6,9 @@ export const BatchService = {
     async getBatchs(): Promise<Models.Batch[]> {
         try {
           const response = await fetch(`${API_URL}/Batch`, {
-            method: 'GET', // Set the request method
-            // Optionally, you can set headers for authentication or other purposes
+            method: 'GET', 
             headers: {
               'Content-Type': 'application/json',
-              // Add any other headers as needed
             },
           });
           if (!response.ok) {
@@ -20,6 +18,84 @@ export const BatchService = {
           return Batches;
         } catch (error) {
           console.error('Error fetching Batches:', error);
+          throw error;
+        }
+      },
+
+      async addBatch(BatchData: Models.Batch): Promise<Response> {
+        try {
+          const response = await fetch(`${API_URL}/Batch`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(BatchData),
+          });
+      
+            return response;
+          
+        } catch (error) {
+          console.error('Error adding Batch:', error);
+          throw error;
+        }
+      },
+      async addBatchs(Batchs: Models.Batch[]): Promise<Response> {
+        try {
+          const response = await fetch(`${API_URL}/Batch/add-multiple`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(Batchs),
+          });
+          return response;
+        } catch (error) {
+          console.error('Error adding Batchs:', error);
+          throw error;
+        }
+      },
+    
+      async updateBatch(TraineeNo: string, BatchData: Models.Batch): Promise<Response> {
+        try {
+          const response = await fetch(`${API_URL}/Batch/${TraineeNo}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(BatchData),
+          });
+          return response;
+        } catch (error) {
+          console.error('Error updating Batch:', error);
+          throw error;
+        }
+      },
+    
+      async deleteBatch(BatchId: string): Promise<Response> {
+        try {
+          const response = await fetch(`${API_URL}/Batch/${BatchId}`, {
+            method: 'DELETE',
+          });
+          return response;
+        } catch (error) {
+          console.error('Error deleting Batch:', error);
+          throw error;
+        }
+      },
+    
+      async deleteBatchs(Batchs: Models.Batch[]): Promise<Response> {
+        try {
+          //const BatchIds = Batchs.map(Batch => Batch.id);
+          const response = await fetch(`${API_URL}/Batch/delete-multiple`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(Batchs),
+          });
+          return response;
+        } catch (error) {
+          console.error('Error deleting Batchs:', error);
           throw error;
         }
       }
