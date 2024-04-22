@@ -11,6 +11,9 @@ import { LayoutContext } from '../../layout/context/layoutcontext';
 import Link from 'next/link';
 import { Demo } from '@/types';
 import { ChartData, ChartOptions } from 'chart.js';
+import { SummeryService } from '@/data/service/SummeryService';
+import { Models } from '@/types/models';
+import 'primeicons/primeicons.css';
 
 const lineData: ChartData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -35,11 +38,21 @@ const lineData: ChartData = {
 };
 
 const Dashboard = () => {
+
+    let emptycounts: Models.Counts = {
+        stuDetailsCount: 0,
+        coursesCount: 0,
+        organizationsCount: 0
+    };
+
     const [products, setProducts] = useState<Demo.Product[]>([]);
     const menu1 = useRef<Menu>(null);
     const menu2 = useRef<Menu>(null);
     const [lineOptions, setLineOptions] = useState<ChartOptions>({});
     const { layoutConfig } = useContext(LayoutContext);
+    const [count, setCount] = useState<Models.Counts>(emptycounts);
+
+    
 
     const applyLightTheme = () => {
         const lineOptions: ChartOptions = {
@@ -106,8 +119,12 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        ProductService.getProductsSmall().then((data) => setProducts(data));
+        SummeryService.getCounts().then((data: Models.Counts) => setCount(data));
     }, []);
+
+    // useEffect(() => {
+    //     ProductService.getProductsSmall().then((data) => setProducts(data));
+    // }, []);
 
     useEffect(() => {
         if (layoutConfig.colorScheme === 'light') {
@@ -130,12 +147,12 @@ const Dashboard = () => {
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Orders</span>
-                            <div className="text-900 font-medium text-xl">152</div>
+                            <span className="block text-500 font-medium mb-3">Students</span>
+                            <div className="text-900 font-medium text-xl">{count.stuDetailsCount}</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
                         <Link href="/pages/student">
-                            <i className="pi pi-shopping-cart text-blue-500 text-xl"/>
+                            <i className="pi pi-user-edit text-blue-500 text-xl"/>
                             </Link>
                         </div>
                     </div>
@@ -147,11 +164,11 @@ const Dashboard = () => {
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Revenue</span>
-                            <div className="text-900 font-medium text-xl">$2.100</div>
+                            <span className="block text-500 font-medium mb-3">Courses</span>
+                            <div className="text-900 font-medium text-xl">{count.coursesCount}</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-map-marker text-orange-500 text-xl" />
+                            <i className="pi pi-graduation-cap text-orange-500 text-xl" />
                         </div>
                     </div>
                     <span className="text-green-500 font-medium">%52+ </span>
@@ -162,11 +179,11 @@ const Dashboard = () => {
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
-                            <span className="block text-500 font-medium mb-3">Customers</span>
-                            <div className="text-900 font-medium text-xl">28441</div>
+                            <span className="block text-500 font-medium mb-3">Organizations</span>
+                            <div className="text-900 font-medium text-xl">{count.organizationsCount}</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                            <i className="pi pi-inbox text-cyan-500 text-xl" />
+                            <i className="pi pi-building-columns text-cyan-500 text-xl" />
                         </div>
                     </div>
                     <span className="text-green-500 font-medium">520 </span>

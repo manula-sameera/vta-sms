@@ -42,4 +42,12 @@ declare namespace Models {
         address: string;
         [key: string]: string | string[] | number;
     }
+
+    interface Counts{
+        stuDetailsCount: number,
+        coursesCount: number,
+        organizationsCount: number
+
+        [key: string]: string | string[] | number;
+    }
 }

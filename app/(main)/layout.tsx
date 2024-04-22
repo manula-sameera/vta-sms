@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Layout from '../../layout/layout';
+import 'primeicons/primeicons.css';
 
 interface AppLayoutProps {
     children: React.ReactNode;
