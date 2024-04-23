@@ -3,7 +3,7 @@
 import { Button } from 'primereact/button';
 import { Chart } from 'primereact/chart';
 import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
+import { DataTable, DataTableFilterMeta } from 'primereact/datatable';
 import { Menu } from 'primereact/menu';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ProductService } from '../../data/service/ProductService';
@@ -15,27 +15,8 @@ import { SummeryService } from '@/data/service/SummeryService';
 import { Models } from '@/types/models';
 import 'primeicons/primeicons.css';
 
-const lineData: ChartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-    datasets: [
-        {
-            label: 'First Dataset',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            fill: false,
-            backgroundColor: '#2f4860',
-            borderColor: '#2f4860',
-            tension: 0.4
-        },
-        {
-            label: 'Second Dataset',
-            data: [28, 48, 40, 19, 86, 27, 90],
-            fill: false,
-            backgroundColor: '#00bb7e',
-            borderColor: '#00bb7e',
-            tension: 0.4
-        }
-    ]
-};
+
+
 
 const Dashboard = () => {
 
@@ -45,13 +26,36 @@ const Dashboard = () => {
         organizationsCount: 0
     };
 
-    const [products, setProducts] = useState<Demo.Product[]>([]);
+    const [pending_amounts, setPendingAmounts] = useState<Models.PendingAmounts[]>([]);
+    const [organization_students_count, setOrganizationStudentsCount] = useState<Models.OrganizationStudentsCount[]>([]);
     const menu1 = useRef<Menu>(null);
     const menu2 = useRef<Menu>(null);
-    const [lineOptions, setLineOptions] = useState<ChartOptions>({});
+    const [chartOptions, setchartOptions] = useState<ChartOptions>({});
     const { layoutConfig } = useContext(LayoutContext);
     const [count, setCount] = useState<Models.Counts>(emptycounts);
 
+    const chartData: ChartData = {
+        labels: organization_students_count.map(item => item.organizationName),
+        datasets: [
+            {
+                label: 'No of Students',
+                data: organization_students_count.map(item => item.students),
+                fill: false,
+                backgroundColor: '#2f4860',
+                borderColor: '#2f4860',
+                tension: 0.4
+            }
+            // ,
+            // {
+            //     label: 'Second Dataset',
+            //     data: [28, 48, 40, 19, 86, 27, 90],
+            //     fill: false,
+            //     backgroundColor: '#00bb7e',
+            //     borderColor: '#00bb7e',
+            //     tension: 0.4
+            // }
+        ]
+    };
     
 
     const applyLightTheme = () => {
@@ -83,7 +87,7 @@ const Dashboard = () => {
             }
         };
 
-        setLineOptions(lineOptions);
+        setchartOptions(lineOptions);
     };
 
     const applyDarkTheme = () => {
@@ -115,16 +119,22 @@ const Dashboard = () => {
             }
         };
 
-        setLineOptions(lineOptions);
+        setchartOptions(lineOptions);
     };
 
     useEffect(() => {
         SummeryService.getCounts().then((data: Models.Counts) => setCount(data));
     }, []);
 
-    // useEffect(() => {
-    //     ProductService.getProductsSmall().then((data) => setProducts(data));
-    // }, []);
+    useEffect(() => {
+        SummeryService.getPendingAmounts().then((data: Models.PendingAmounts[]) => setPendingAmounts(data));
+    }, []);
+
+    useEffect(() => {
+        SummeryService.getOrganizationStudentsCount().then((data: Models.OrganizationStudentsCount[]) => setOrganizationStudentsCount(data));
+    }, []);
+
+
 
     useEffect(() => {
         if (layoutConfig.colorScheme === 'light') {
@@ -144,7 +154,7 @@ const Dashboard = () => {
     return (
         <div className="grid">
             
-            <div className="col-12 lg:col-6 xl:col-3">
+            <div className="col-12 lg:col-6 xl:col-3 ">
             <Link href="/pages/student">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
@@ -161,6 +171,7 @@ const Dashboard = () => {
             </div>
            
             <div className="col-12 lg:col-6 xl:col-3">
+            <Link href="/pages/course">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
@@ -168,13 +179,14 @@ const Dashboard = () => {
                             <div className="text-900 font-medium text-5xl">{count.coursesCount}</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-orange-100 border-round" style={{ width: '6rem', height: '6rem' }}>
-                            <i className="pi pi-graduation-cap text-orange-500 text-6xl" />
+                            <i className="pi pi-book text-orange-500 text-6xl" />
                         </div>
                     </div>
-                    
                 </div>
+            </Link>
             </div>
             <div className="col-12 lg:col-6 xl:col-3">
+            <Link href="/pages/organization">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
@@ -182,13 +194,14 @@ const Dashboard = () => {
                             <div className="text-900 font-medium text-5xl">{count.organizationsCount}</div>
                         </div>
                         <div className="flex align-items-center justify-content-center bg-cyan-100 border-round" style={{ width: '6rem', height: '6rem' }}>
-                            <i className="pi pi-building-columns text-cyan-500 text-6xl" />
+                            <i className="pi pi-building text-cyan-500 text-6xl" />
                         </div>
                     </div>
-                   
                 </div>
+            </Link>
             </div>
             <div className="col-12 lg:col-6 xl:col-3">
+            <Link href="/pages/course">
                 <div className="card mb-0">
                     <div className="flex justify-content-between mb-3">
                         <div>
@@ -201,24 +214,19 @@ const Dashboard = () => {
                     </div>
                     
                 </div>
+            </Link>
             </div>
 
             <div className="col-12 xl:col-6">
                 <div className="card">
-                    <h5>Recent Sales</h5>
-                    <DataTable value={products} rows={5} paginator responsiveLayout="scroll">
-                        <Column header="Image" body={(data) => <img className="shadow-2" src={`/data/images/product/${data.image}`} alt={data.image} width="50" />} />
-                        <Column field="name" header="Name" sortable style={{ width: '35%' }} />
-                        <Column field="price" header="Price" sortable style={{ width: '35%' }} body={(data) => formatCurrency(data.price)} />
-                        <Column
-                            header="View"
-                            style={{ width: '15%' }}
-                            body={() => (
-                                <>
-                                    <Button icon="pi pi-search" text />
-                                </>
-                            )}
-                        />
+                    <h5>Pending Payments</h5>
+                    <DataTable value={pending_amounts} rows={5} paginator responsiveLayout="scroll">
+                        <Column field="traineeNo" header="traineeNo" sortable style={{ width: '10%' }} body={(data) => data.traineeNo} />
+                        <Column field="nameWithInitials" header="nameWithInitials" sortable style={{ width: '30%' }} body={(data) => data.nameWithInitials} />
+                        <Column field="courseName" header="courseName" sortable style={{ width: '30%' }} body={(data) => data.courseName} />
+                        <Column field="batchID" header="batchID" sortable style={{ width: '15%' }} body={(data) => data.batchID} />
+                        <Column field="pendingAmount" header="pendingAmount" sortable style={{ width: '15%' }} body={(data) => formatCurrency(data.pendingAmount)} />
+                                          
                     </DataTable>
                 </div>
                 <div className="card">
@@ -315,8 +323,8 @@ const Dashboard = () => {
 
             <div className="col-12 xl:col-6">
                 <div className="card">
-                    <h5>Sales Overview</h5>
-                    <Chart type="line" data={lineData} options={lineOptions} />
+                    <h5>Student Count in Centers</h5>
+                    <Chart type="bar" data={chartData} options={chartOptions} />
                 </div>
 
                 <div className="card">

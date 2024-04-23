@@ -617,7 +617,7 @@ const Crud = () => {
                             <Dropdown
                                 value={selectedGender}
                                 onChange={(e) => {
-                                    setselectedGender(e.value.name);
+                                    setselectedGender(e.value);
                                 }}
                                 options={genders}
                                 optionLabel="name"

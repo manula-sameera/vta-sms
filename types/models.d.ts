@@ -50,4 +50,17 @@ declare namespace Models {
 
         [key: string]: string | string[] | number;
     }
+
+    interface PendingAmounts{
+        traineeNo: string,
+        nameWithInitials: string,
+        courseName: string,
+        batchID: string,
+        pendingAmount: number
+    }
+
+    interface OrganizationStudentsCount{
+        organizationName: string,
+        students: number
+    }
 }

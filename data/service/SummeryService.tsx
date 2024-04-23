@@ -19,5 +19,42 @@ export const SummeryService = {
           console.error('Error fetching Counts:', error);
           throw error;
         }
+      },
+
+      async getPendingAmounts(): Promise<Models.PendingAmounts[]> {
+        try {
+          const response = await fetch(`${API_URL}/Summery/pending_amounts`, {
+            method: 'GET', 
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          if (!response.ok) {
+            throw new Error('Failed to fetch PendingAmounts');
+          }
+          const PendingAmounts: Models.PendingAmounts[] = await response.json();
+          return PendingAmounts;
+        } catch (error) {
+          console.error('Error fetching PendingAmounts:', error);
+          throw error;
+        }
+      },
+      async getOrganizationStudentsCount(): Promise<Models.OrganizationStudentsCount[]> {
+        try {
+          const response = await fetch(`${API_URL}/Summery/OrganizationStudentsCount`, {
+            method: 'GET', 
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          if (!response.ok) {
+            throw new Error('Failed to fetch OrganizationStudentsCount');
+          }
+          const OrganizationStudentsCount: Models.OrganizationStudentsCount[] = await response.json();
+          return OrganizationStudentsCount;
+        } catch (error) {
+          console.error('Error fetching OrganizationStudentsCount:', error);
+          throw error;
+        }
       }
 }
