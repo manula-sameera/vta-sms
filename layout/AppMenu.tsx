@@ -38,6 +38,11 @@ const AppMenu = () => {
                     label: 'Course',
                     icon: 'pi pi-fw pi-database',
                     to: '/pages/course'
+                },
+                {
+                    label: 'Payment',
+                    icon: 'pi pi-fw pi-money-bill',
+                    to: '/pages/payment'
                 }
             ]
         },

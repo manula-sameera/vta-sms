@@ -19,6 +19,10 @@ import { Skeleton } from 'primereact/skeleton';
 import { VirtualScrollerLoadingTemplateOptions } from 'primereact/virtualscroller';
 import { Dropdown } from 'primereact/dropdown';
 import { parse } from 'csv-parse';
+import { Panel } from 'primereact/panel';
+import { Fieldset } from 'primereact/fieldset';
+import { Divider } from 'primereact/divider';
+import { SummeryService } from '@/data/service/SummeryService';
 
 const Crud = () => {
     //Bookmark:empty model
@@ -32,6 +36,27 @@ const Crud = () => {
         batch: '',
         fingerPrintID: ''
     };
+
+    let emptyTrainee : Models.Trainee =  {
+
+        traineeNo: '',
+        nameWithInitials: '',
+        address: '',
+        nic: '',
+        gender: '',
+        mob: '',
+        batch: '',
+        fingerPrintID: '',
+        courses: [],
+        payments: [],
+        attendance: 0,
+        practicalExams: [],
+        theoryExams: [],
+        ojtPlacements: [],
+        jobPlacements: [],
+        higherEducations: [],
+        dropouts: []
+    }; 
 
     const [students, setStudents] = useState<Models.Student[] | null>(null);
     const [studentDialog, setStudentDialog] = useState(false);
@@ -52,6 +77,15 @@ const Crud = () => {
     const [selectedBatch, setSelectedBatch] = useState<string>('');
     const [selectedGender, setselectedGender] = useState<string>('');
     const genders = [{ name: 'Male' }, { name: 'Female' }];
+    const [visible, setVisible] = useState(false);
+    const [trainee, settrainee] = useState<Models.Trainee>(emptyTrainee);
+
+    const toggleDialog = (student: Models.Student) => {
+        setStudent({ ...student });
+        fetchTrainee(student);
+        setVisible(!visible);
+    };
+
 
     //Bookmark: main fetch event
     useEffect(() => {
@@ -90,6 +124,17 @@ const Crud = () => {
             console.error('Error fetching batches:', error);
         }
     };
+
+    const fetchTrainee = async (student: Models.Student) => {
+        try {
+            console.log('studentidsummery' + student.traineeNo);
+            const traineeData = await SummeryService.getStudentSummary(student.traineeNo);
+            console.log('traineeData' + JSON.stringify(traineeData));
+            settrainee(traineeData[0]);
+        } catch (error) {
+            console.error('Error fetching Trainee:', error);
+        }
+    }
 
     //#endregion
     const openNew = () => {
@@ -470,7 +515,8 @@ const Crud = () => {
         return (
             <>
                 <Button icon="pi pi-pencil" rounded severity="success" className="mr-2" onClick={() => editStudent(rowData)} />
-                <Button icon="pi pi-trash" rounded severity="warning" onClick={() => confirmDeleteStudent(rowData)} />
+                <Button icon="pi pi-trash" rounded severity="warning" className="mr-2" onClick={() => confirmDeleteStudent(rowData)} />
+                <Button icon="pi pi-info-circle" rounded severity="info" onClick={() => toggleDialog(rowData)} />
             </>
         );
     };
@@ -546,11 +592,11 @@ const Crud = () => {
                         <Column field="nameWithInitials" header="nameWithInitials" sortable body={nameWithInitialsBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="address" header="address" sortable body={addressBodyTemplate} headerStyle={{ minWidth: '15rem' }}></Column>
                         <Column field="nic" header="nic" sortable body={nicBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column field="gender" header="gender" sortable body={genderBodyTemplate} headerStyle={{ minWidth: '8rem' }}></Column>
+                        <Column field="gender" header="gender" sortable body={genderBodyTemplate} headerStyle={{ minWidth: '5rem' }}></Column>
                         <Column field="mob" header="mob" sortable body={mobBodyTemplate} headerStyle={{ minWidth: '7rem' }}></Column>
-                        <Column field="batch" header="batch" sortable body={batchBodyTemplate} headerStyle={{ minWidth: '6rem' }}></Column>
-                        <Column field="fingerPrintID" header="fingerPrintID" sortable body={fingerPrintIDBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
-                        <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }}></Column>
+                        <Column field="batch" header="batch" sortable body={batchBodyTemplate} headerStyle={{ minWidth: '5rem' }}></Column>
+                        <Column field="fingerPrintID" header="fingerPrintID" sortable body={fingerPrintIDBodyTemplate} headerStyle={{ minWidth: '5rem' }}></Column>
+                        <Column body={actionBodyTemplate} headerStyle={{ minWidth: '13rem' }}></Column>
                     </DataTable>
 
                     <Dialog visible={studentDialog} style={{ width: '450px' }} header="Student Details" modal className="p-fluid" footer={studentDialogFooter} onHide={hideDialog}>
@@ -693,6 +739,86 @@ const Crud = () => {
                             {selectedStudents && <span>Are you sure you want to delete the {selectedStudents.length} selected students?</span>}
                         </div>
                     </Dialog>
+                    <Dialog header="Trainee Details" maximizable visible={visible} style={{ width: '70vw' }} modal onHide={() => {if (!visible) return; setVisible(false); }}>
+                <Panel header="Personal Information">
+                    <p><strong>Trainee No:</strong> {trainee.traineeNo}</p>
+                    <p><strong>Name:</strong> {trainee.nameWithInitials}</p>
+                    <p><strong>Address:</strong> {trainee.address}</p>
+                    <p><strong>NIC:</strong> {trainee.nic}</p>
+                    <p><strong>Gender:</strong> {trainee.gender}</p>
+                    <p><strong>Mobile:</strong> {trainee.mob}</p>
+                    <p><strong>Batch:</strong> {trainee.batch}</p>
+                    <p><strong>Fingerprint ID:</strong> {trainee.fingerPrintID}</p>
+                    <p><strong>Attendance:</strong> {trainee.attendance}%</p>
+                </Panel>
+                <Divider />
+                <Fieldset legend="Courses">
+                    <DataTable value={trainee.courses}>
+                        <Column field="courseID" header="Course ID" />
+                        <Column field="courseName" header="Course Name" />
+                        <Column field="courseInstructor" header="Instructor ID" />
+                    </DataTable>
+                </Fieldset>
+                <Divider />
+                <Fieldset legend="Payments">
+                    <DataTable value={trainee.payments}>
+                        <Column field="paymentID" header="Payment ID" />
+                        <Column field="paymentAmount" header="Amount" />
+                        <Column field="paymentDate" header="Date" />
+                    </DataTable>
+                </Fieldset>
+                <Divider />
+                <Fieldset legend="Practical Exams">
+                    <DataTable value={trainee.practicalExams}>
+                        <Column field="practicalExamDate" header="Date" />
+                        <Column field="practicalExamModule" header="Module" />
+                        <Column field="practicalExamResult" header="Result" />
+                    </DataTable>
+                </Fieldset>
+                <Divider />
+                <Fieldset legend="Theory Exams">
+                    <DataTable value={trainee.theoryExams}>
+                        <Column field="theoryExamDate" header="Date" />
+                        <Column field="theoryExamResult" header="Result" />
+                    </DataTable>
+                </Fieldset>
+                <Divider />
+                <Fieldset legend="OJT Placements">
+                    <DataTable value={trainee.ojtPlacements}>
+                        <Column field="ojtJobTitle" header="Job Title" />
+                        <Column field="ojtWorkplaceName" header="Workplace Name" />
+                        <Column field="ojtWorkplaceAddress" header="Workplace Address" />
+                        <Column field="ojtoicName" header="OIC Name" />
+                        <Column field="ojtStartDate" header="Start Date" />
+                        <Column field="ojtEndDate" header="End Date" />
+                    </DataTable>
+                </Fieldset>
+                <Divider />
+                <Fieldset legend="Job Placements">
+                    <DataTable value={trainee.jobPlacements}>
+                        <Column field="jobPlacementTitle" header="Job Title" />
+                        <Column field="jobPlacementWorkplaceName" header="Workplace Name" />
+                        <Column field="jobPlacementWorkplaceAddress" header="Workplace Address" />
+                        <Column field="jobPlacementStartDate" header="Start Date" />
+                    </DataTable>
+                </Fieldset>
+                <Divider />
+                <Fieldset legend="Higher Educations">
+                    <DataTable value={trainee.higherEducations}>
+                        <Column field="higherEducationInstitute" header="Institute" />
+                        <Column field="higherEducationLevel" header="Level" />
+                        <Column field="higherEducationRemarks" header="Remarks" />
+                    </DataTable>
+                </Fieldset>
+                <Divider />
+                <Fieldset legend="Dropouts">
+                    <DataTable value={trainee.dropouts}>
+                        <Column field="dropoutReason" header="Reason" />
+                        <Column field="dropoutLastAttendedDate" header="Last Attended Date" />
+                        <Column field="dropoutFiledDate" header="Filed Date" />
+                    </DataTable>
+                </Fieldset>
+            </Dialog>
                 </div>
             </div>
         </div>

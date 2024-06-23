@@ -56,5 +56,25 @@ export const SummeryService = {
           console.error('Error fetching OrganizationStudentsCount:', error);
           throw error;
         }
+      },
+
+      async getStudentSummary(studentID : string): Promise<Models.Trainee[]> {
+        try {
+          const response = await fetch(`${API_URL}/Summery/StudentSummery/${encodeURIComponent(studentID)}`, {
+            method: 'GET', 
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          if (!response.ok) {
+            throw new Error('Failed to fetch Trainee');
+          }
+          const Trainee: Models.Trainee[] = await response.json();
+          return Trainee;
+        } catch (error) {
+          console.error('Error fetching Trainee:', error);
+          throw error;
+        }
+
       }
 }
