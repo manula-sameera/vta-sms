@@ -1,2 +1,2 @@
-//export const API_URL = 'https://vtasms.azurewebsites.net';
-export const API_URL = 'https://localhost:7251';
+export const API_URL = 'https://vta-sms-api.azurewebsites.net';
+//export const API_URL = 'https://localhost:7251';
