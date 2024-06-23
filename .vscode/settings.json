@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/70c9bb9f-34e2-4ea6-bd1a-021d70ab9cee/resourceGroups/vta_sms/providers/Microsoft.Web/sites/vta-sms",
+    "appService.deploySubpath": "."
+}
