@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    basePath: '',
+    basePath: 'vta-sms',
+    assetPrefix: '/vta-sms/',
 }
 
 module.exports = nextConfig
