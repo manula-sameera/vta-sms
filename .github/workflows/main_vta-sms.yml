@@ -27,7 +27,7 @@ jobs:
           npm run build --if-present
           npm run test --if-present
       - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        run: zip -r release.zip * .env .next
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
@@ -64,4 +64,6 @@ jobs:
           app-name: 'vta-sms'
           slot-name: 'Production'
           package: .
+      - name : 'delete the zip file after the unzip'
+        run: rm release.zip
           
