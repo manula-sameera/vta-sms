@@ -1,7 +1,5 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+// This file is used to configure the base path of the application
+module.exports = {
     basePath: '/vta-sms',
-    assetPrefix: 'https://manula-sameera.github.io/vta-sms/',
-}
-
-module.exports = nextConfig
+    assetPrefix: '/vta-sms/',
+  }
