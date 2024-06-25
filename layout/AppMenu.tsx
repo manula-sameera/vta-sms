@@ -14,7 +14,7 @@ const AppMenu = () => {
         {
             label: 'Home',
             icon: 'pi pi-fw pi-user',
-            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '' }]
+            items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' }]
         },
         {
             label: 'Data Tabels',
@@ -22,12 +22,12 @@ const AppMenu = () => {
                 {
                     label: 'Student',
                     icon: 'pi pi-fw pi-user-edit',
-                    to: 'pages/student'
+                    to: '/pages/student'
                 },
                 {
                     label: 'Batch',
                     icon: 'pi pi-fw pi-database',
-                    to: 'pages/batch'
+                    to: '/pages/batch'
                 },
                 {
                     label: 'Organization',
