@@ -60,7 +60,7 @@ export const SummeryService = {
 
       async getStudentSummary(studentID : string): Promise<Models.Trainee[]> {
         try {
-          const response = await fetch(`${API_URL}/Summery/StudentSummery/${encodeURIComponent(studentID)}`, {
+          const response = await fetch(`${API_URL}/Summery/StudentSummery?TraineeNo=${encodeURIComponent(studentID)}`, {
             method: 'GET', 
             headers: {
               'Content-Type': 'application/json',
