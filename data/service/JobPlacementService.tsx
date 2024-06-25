@@ -5,7 +5,7 @@ export const JobPlacementService = {
 
     async getJobPlacement(traineeNo: string): Promise<Models.JobPlacement> {
         try {
-            const response = await fetch(`${API_URL}/jobplacements/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/jobplacements/TraineeNo?TraineeNo=${traineeNo}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const JobPlacementService = {
 
     async updateJobPlacement(traineeNo: string, jobPlacementData: Models.JobPlacement): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/jobplacements/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/jobplacements?TraineeNo=${traineeNo}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const JobPlacementService = {
 
     async deleteJobPlacement(traineeNo: string): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/jobplacements/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/jobplacements?TraineeNo=${traineeNo}`, {
                 method: 'DELETE',
             });
             return response;

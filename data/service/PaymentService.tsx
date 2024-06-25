@@ -56,7 +56,7 @@ export const PaymentService = {
 
     async updatePayment(paymentID: string, paymentData: Models.Payment): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/payments/${paymentID}`, {
+            const response = await fetch(`${API_URL}/payments?PaymentID=${paymentID}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const PaymentService = {
 
     async deletePayment(paymentID: string): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/payments/${paymentID}`, {
+            const response = await fetch(`${API_URL}/payments?PaymentID=${paymentID}`, {
                 method: 'DELETE',
             });
             return response;

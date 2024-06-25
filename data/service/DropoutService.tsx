@@ -5,7 +5,7 @@ export const DropoutService = {
 
     async getDropout(traineeNo: string): Promise<Models.Dropout> {
         try {
-            const response = await fetch(`${API_URL}/dropouts/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/dropouts/TraineeNo?TraineeNo=${traineeNo}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const DropoutService = {
 
     async updateDropout(traineeNo: string, dropoutData: Models.Dropout): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/dropouts/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/dropouts?TraineeNo=${traineeNo}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const DropoutService = {
 
     async deleteDropout(traineeNo: string): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/dropouts/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/dropouts?TraineeNo=${traineeNo}`, {
                 method: 'DELETE',
             });
             return response;

@@ -62,7 +62,7 @@ export const CourseService = {
 
   async updateCourse(TraineeNo: string, courseData: Models.Course): Promise<Response> {
     try {
-      const response = await fetch(`${API_URL}/Course/${TraineeNo}`, {
+      const response = await fetch(`${API_URL}/Course?CourseID=${TraineeNo}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export const CourseService = {
   async deleteCourse(studentId: string): Promise<Response> {
     try {
       console.log('studentId:', studentId);
-      const response = await fetch(`${API_URL}/Course/${studentId}`, {
+      const response = await fetch(`${API_URL}/Course?CourseID=${studentId}`, {
         method: 'DELETE',
       });
       return response;

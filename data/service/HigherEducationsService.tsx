@@ -5,7 +5,7 @@ export const HigherEducationsService = {
 
     async getHigherEducation(traineeNo: string): Promise<Models.HigherEducation> {
         try {
-            const response = await fetch(`${API_URL}/highereducations/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/highereducations/TraineeNo?TraineeNo=${traineeNo}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const HigherEducationsService = {
 
     async updateHigherEducation(traineeNo: string, higherEducationData: Models.HigherEducation): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/highereducations/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/highereducations?TraineeNo=${traineeNo}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const HigherEducationsService = {
 
     async deleteHigherEducation(traineeNo: string): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/highereducations/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/highereducations?TraineeNo=${traineeNo}`, {
                 method: 'DELETE',
             });
             return response;

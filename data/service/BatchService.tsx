@@ -57,7 +57,7 @@ export const BatchService = {
     
       async updateBatch(TraineeNo: string, BatchData: Models.Batch): Promise<Response> {
         try {
-          const response = await fetch(`${API_URL}/Batch/${TraineeNo}`, {
+          const response = await fetch(`${API_URL}/Batch?BatchID=${TraineeNo}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export const BatchService = {
     
       async deleteBatch(BatchId: string): Promise<Response> {
         try {
-          const response = await fetch(`${API_URL}/Batch/${BatchId}`, {
+          const response = await fetch(`${API_URL}/Batch?BatchID=${BatchId}`, {
             method: 'DELETE',
           });
           return response;

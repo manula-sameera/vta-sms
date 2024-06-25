@@ -5,7 +5,7 @@ export const CertificateService = {
 
     async getCertificate(traineeNo: string): Promise<Models.Certificate> {
         try {
-            const response = await fetch(`${API_URL}/certificates/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/certificates/CertificateNo?CertificateNo=${traineeNo}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const CertificateService = {
 
     async updateCertificate(traineeNo: string, certificateData: Models.Certificate): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/certificates/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/certificates?CertificateNo=${traineeNo}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const CertificateService = {
 
     async deleteCertificate(traineeNo: string): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/certificates/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/certificates?CertificateNo=${traineeNo}`, {
                 method: 'DELETE',
             });
             return response;

@@ -3,9 +3,9 @@ import { Models } from '@/types/models';
 
 export const PracticalExamResultsService = {
 
-    async getPracticalExamResult(traineeNo: string): Promise<Models.PracticalExamResults> {
+    async getPracticalExamResult(traineeNo: string,pExamDate : Date,pExamModule:string): Promise<Models.PracticalExamResults> {
         try {
-            const response = await fetch(`${API_URL}/practicalexamresults/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/practicalexamresults/data?TraineeNo=${traineeNo}&PExamModule=${pExamModule}&PExamDate=${pExamDate}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export const PracticalExamResultsService = {
             throw error;
         }
     },
-
+//TODO: Complete PracticalExamResult services
     async updatePracticalExamResult(traineeNo: string, practicalExamResultData: Models.PracticalExamResults): Promise<Response> {
         try {
             const response = await fetch(`${API_URL}/practicalexamresults/${traineeNo}`, {

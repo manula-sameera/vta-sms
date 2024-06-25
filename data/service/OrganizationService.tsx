@@ -57,7 +57,7 @@ export const OrganizationService = {
     
       async updateOrganization(TraineeNo: string, OrganizationData: Models.Organization): Promise<Response> {
         try {
-          const response = await fetch(`${API_URL}/Organizations/${TraineeNo}`, {
+          const response = await fetch(`${API_URL}/Organizations?OrganizationID=${TraineeNo}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ export const OrganizationService = {
     
       async deleteOrganization(OrganizationId: string): Promise<Response> {
         try {
-          const response = await fetch(`${API_URL}/Organizations/${OrganizationId}`, {
+          const response = await fetch(`${API_URL}/Organizations?OrganizationID=${OrganizationId}`, {
             method: 'DELETE',
           });
           return response;

@@ -5,7 +5,7 @@ export const AttendanceService = {
 
     async getAttendance(traineeNo: string): Promise<Models.Attendance> {
         try {
-            const response = await fetch(`${API_URL}/attendance/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/attendance/TraineeNo?TraineeNo=${traineeNo}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const AttendanceService = {
 
     async updateAttendance(traineeNo: string, attendanceData: Models.Attendance): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/attendance/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/attendance?TraineeNo=${traineeNo}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const AttendanceService = {
 
     async deleteAttendance(traineeNo: string): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/attendance/${traineeNo}`, {
+            const response = await fetch(`${API_URL}/attendance?TraineeNo=${traineeNo}`, {
                 method: 'DELETE',
             });
             return response;

@@ -5,7 +5,7 @@ export const InstructorService = {
 
     async getInstructor(epf: string): Promise<Models.Instructor> {
         try {
-            const response = await fetch(`${API_URL}/instructor/${epf}`, {
+            const response = await fetch(`${API_URL}/instructor/EPF?EPF=${epf}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const InstructorService = {
 
     async updateInstructor(epf: string, instructorData: Models.Instructor): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/instructor/${epf}`, {
+            const response = await fetch(`${API_URL}/instructor?EPF=${epf}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export const InstructorService = {
 
     async deleteInstructor(epf: string): Promise<Response> {
         try {
-            const response = await fetch(`${API_URL}/instructor/${epf}`, {
+            const response = await fetch(`${API_URL}/instructor?EPF=${epf}`, {
                 method: 'DELETE',
             });
             return response;

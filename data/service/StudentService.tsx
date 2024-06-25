@@ -62,7 +62,7 @@ export const StudentService = {
 
   async updateStudent(TraineeNo: string, studentData: Models.Student): Promise<Response> {
     try {
-      const response = await fetch(`${API_URL}/StudentDetails/${TraineeNo}`, {
+      const response = await fetch(`${API_URL}/StudentDetails?TraineeNo=${TraineeNo}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +79,7 @@ export const StudentService = {
   async deleteStudent(studentId: string): Promise<Response> {
     try {
       console.log('studentId:', studentId);
-      const response = await fetch(`${API_URL}/StudentDetails/${studentId}`, {
+      const response = await fetch(`${API_URL}/StudentDetails?TraineeNo=${studentId}`, {
         method: 'DELETE',
       });
       return response;
